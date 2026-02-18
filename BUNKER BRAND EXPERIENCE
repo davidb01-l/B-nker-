@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búnker | Brand Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --azul: #0a192f; --azul-claro: #172a45; --dorado: #c5a059; --blanco: #ccd6f6; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--azul); margin: 0; color: white; min-height: 100vh; }
+        
+        /* LOGIN */
+        #loginArea { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; }
+        .login-card { background: var(--azul-claro); padding: 40px; border-radius: 20px; border: 1px solid var(--dorado); width: 90%; max-width: 350px; }
+        .logo { font-family: 'Orbitron', sans-serif; color: var(--dorado); letter-spacing: 5px; margin-bottom: 25px; }
+        input, select { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: 1px solid rgba(201, 160, 89, 0.3); background: rgba(0,0,0,0.2); color: white; box-sizing: border-box; font-size: 1rem; }
+        .btn-gold { background: var(--dorado); color: var(--azul); border: none; width: 100%; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.3s; }
+        
+        /* PANEL MAESTRO */
+        #panelMaestro { display: none; padding: 20px; max-width: 600px; margin: auto; }
+        .admin-section { background: var(--azul-claro); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid var(--dorado); }
+        .project-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .project-thumb { width: 100%; aspect-ratio: 1/1; background: #333; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid #444; }
+        .project-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .delete-btn { position: absolute; top: 2px; right: 2px; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; }
+
+        /* VISTA CLIENTE (Simulada para visualización del dueño) */
+        .client-view { background: white; color: var(--azul); border-radius: 20px; padding: 20px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <div id="loginArea">
+        <div class="login-card">
+            <h1 class="logo">BÚNKER</h1>
+            <input type="email" id="email" value="rdave5132@gmai.com" readonly>
+            <input type="password" id="pass" placeholder="Contraseña Maestra">
+            <button class="btn-gold" onclick="validarAcceso()">INGRESAR</button>
+        </div>
+    </div>
+
+    <div id="panelMaestro">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h1 class="logo">BÚNKER</h1>
+            <p style="font-size: 0.7rem; color: var(--dorado);">PANEL DE CONTROL EXCLUSIVO</p>
+        </div>
+
+        <div class="admin-section">
+            <h3>📞 CONTACTO MAESTRO</h3>
+            <input type="text" id="waNum" value="573244090611">
+            <button class="btn-gold" style="padding: 8px; font-size: 0.8rem;" onclick="alert('Número actualizado')">ACTUALIZAR WA</button>
+        </div>
+
+        <div class="admin-section">
+            <h3>🖼️ NUEVO PROYECTO (BIMBO / STANDS)</h3>
+            <input type="text" id="nombreProyecto" placeholder="Nombre del proyecto (ej: Stand Bimbo)">
+            <input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="subirFoto(event)">
+            <button class="btn-gold" onclick="document.getElementById('fileInput').click()">+ SELECCIONAR FOTO</button>
+            
+            <div class="project-grid" id="gridPortafolio">
+                </div>
+        </div>
+
+        <button class="btn-gold" style="background: #3b82f6; color: white; margin-top: 20px;" onclick="location.reload()">GUARDAR Y SALIR</button>
+    </div>
+
+    <script>
+        function validarAcceso() {
+            const p = document.getElementById('pass').value;
+            if(p === "demden-kisgan-qUgmi1") {
+                document.getElementById('loginArea').style.display = 'none';
+                document.getElementById('panelMaestro').style.display = 'block';
+            } else {
+                alert("Clave incorrecta.");
+            }
+        }
+
+        function subirFoto(event) {
+            const nombre = document.getElementById('nombreProyecto').value;
+            if(!nombre) { alert("Pon un nombre al proyecto primero"); return; }
+            
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const id = Date.now();
+                const grid = document.getElementById('gridPortafolio');
+                const div = document.createElement('div');
+                div.className = 'project-thumb';
+                div.id = id;
+                div.innerHTML = `
+                    <button class="delete-btn" onclick="document.getElementById('${id}').remove()">✕</button>
+                    <img src="${e.target.result}">
+                    <div style="position:absolute; bottom:0; background:rgba(0,0,0,0.7); width:100%; font-size:8px; text-align:center;">${nombre}</div>
+                `;
+                grid.appendChild(div);
+                document.getElementById('nombreProyecto').value = "";
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
